@@ -1,17 +1,52 @@
 plugins {
     id 'java'
+    id 'maven-publish'
 }
 
-group 'eu.koboo'
-version '1.1'
+group "${publicGroup}"
+version "${publicVersion}"
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+compileJava.options.encoding = 'UTF-8'
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+publishing {
+    repositories {
+        maven {
+            url = "${publishRepo}"
+            credentials {
+                username = System.getenv('REPO_USER')
+                password = System.getenv('REPO_TOKEN')
+            }
+        }
+    }
+    publications {
+        maven(MavenPublication) {
+            from components.java
+        }
+    }
+}
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
-
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
     compile group: 'org.jline', name: 'jline', version: '3.19.0'
     compile group: 'org.slf4j', name: 'slf4j-jdk14', version: '1.7.30'
 }
+
+
+jar {
+    from {
+        configurations.compile.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+}
+
