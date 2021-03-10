@@ -41,12 +41,3 @@ dependencies {
     compile group: 'org.slf4j', name: 'slf4j-jdk14', version: '1.7.30'
 }
 
-
-jar {
-    from {
-        configurations.compile.collect {
-            it.isDirectory() ? it : zipTree(it)
-        }
-    }
-}
-
