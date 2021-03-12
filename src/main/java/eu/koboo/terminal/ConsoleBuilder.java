@@ -6,16 +6,13 @@ import eu.koboo.terminal.util.ConsoleLevel;
 
 public class ConsoleBuilder {
 
-    int cliThreads;
-    boolean showExecute;
-    boolean showExternal;
-
-    String appName;
-    ConsoleLevel initialLevel;
-
-    String logDirectory;
-
-    String prompt;
+    private int cliThreads;
+    private boolean showExecute;
+    private boolean showExternal;
+    private String appName;
+    private ConsoleLevel initialLevel;
+    private String logDirectory;
+    private String prompt;
 
     private ConsoleBuilder() {
         this.cliThreads = Runtime.getRuntime().availableProcessors();
@@ -70,34 +67,34 @@ public class ConsoleBuilder {
         console.register(new CommandLog());
         console.register(new CommandStop());
         console.register(new CommandUngrep());
-        return new TerminalConsole(this);
+        return console;
     }
 
-    public int getCliThreads() {
+    protected int getCliThreads() {
         return cliThreads;
     }
 
-    public boolean isShowExecute() {
+    protected boolean isShowExecute() {
         return showExecute;
     }
 
-    public boolean isShowExternal() {
+    protected boolean isShowExternal() {
         return showExternal;
     }
 
-    public String getAppName() {
+    protected String getAppName() {
         return appName;
     }
 
-    public ConsoleLevel getInitialLevel() {
+    protected ConsoleLevel getInitialLevel() {
         return initialLevel;
     }
 
-    public String getLogDirectory() {
+    protected String getLogDirectory() {
         return logDirectory;
     }
 
-    public String getPrompt() {
+    protected String getPrompt() {
         return prompt;
     }
 
