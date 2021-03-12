@@ -6,7 +6,7 @@ public abstract class Command implements ICommand {
 
     protected final TerminalConsole terminal;
 
-    public Command(TerminalConsole terminal) {
-        this.terminal = terminal;
+    public Command() {
+        this.terminal = TerminalConsole.getConsole();
     }
 }

@@ -1,22 +1,17 @@
 package eu.koboo.terminal.defaults;
 
 import eu.koboo.terminal.command.Command;
-import eu.koboo.terminal.TerminalConsole;
 
 public class CommandGrep extends Command {
 
-    public CommandGrep(TerminalConsole terminal) {
-        super(terminal);
-    }
-
     @Override
     public String[] commands() {
-        return new String[]{"grep"};
+        return new String[]{"grep", "find"};
     }
 
     @Override
     public String description() {
-        return "Grep only message, containing <message>";
+        return "Grep only messages, containing <message>";
     }
 
     @Override
@@ -28,7 +23,7 @@ public class CommandGrep extends Command {
             }
             String message = builder.toString();
             message = message.substring(0, message.length() - 1);
-            terminal.cmd("Grep-Mode active: '" + message + "'");
+            terminal.all("Grep-Mode active: '" + message + "'");
             terminal.grep(message);
         } else {
             printHelp();
@@ -36,8 +31,8 @@ public class CommandGrep extends Command {
     }
 
     private void printHelp() {
-        terminal.cmd("");
-        terminal.cmd("Usage: grep <message> - Filter logs by message");
-        terminal.cmd("");
+        terminal.all("");
+        terminal.all("Usage: grep <message> - Filter logs by message");
+        terminal.all("");
     }
 }
