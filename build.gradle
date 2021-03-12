@@ -16,7 +16,7 @@ tasks.withType(JavaCompile) {
 publishing {
     repositories {
         maven {
-            url = "${publishRepo}"
+            url = 'http://repo.koboo.eu/releases'
             credentials {
                 username = System.getenv('REPO_USER')
                 password = System.getenv('REPO_TOKEN')
@@ -32,6 +32,9 @@ publishing {
 
 repositories {
     mavenCentral()
+    maven {
+        url 'http://repo.koboo.eu/releases'
+    }
 }
 
 dependencies {
