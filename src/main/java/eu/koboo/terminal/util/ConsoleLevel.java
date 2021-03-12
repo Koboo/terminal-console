@@ -5,14 +5,14 @@ package eu.koboo.terminal.util;
  */
 public enum ConsoleLevel {
 
-    NONE(-1),
+    OFF(-1),
     TRACE(0),
     DEBUG(1),
-    WARN(2),
-    INFO(3),
-    ALERT(4),
-    ERROR(5),
-    CMD(6),
+    INFO(2),
+    WARN(3),
+    ERROR(4),
+    FATAL(5),
+    ALL(6),
     EXT(7);
 
     int level;
