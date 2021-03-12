@@ -45,7 +45,7 @@ public enum ConsoleColor {
         return message.contains(color.getParagraphCode()) ? message.replaceAll(color.getParagraphCode(), replacement) : message;
     }
 
-    private static String removeColor(ConsoleColor color, String message) {
+    public static String removeColor(ConsoleColor color, String message) {
         return replaceColor(color, message, "");
     }
 
