@@ -135,12 +135,12 @@ public class TerminalConsole {
                     String line = lineReader.readLine(consoleBuilder.getPrompt());
                     line = line.trim();
                     if (!executeCLICommand(line)) {
-                        info("No command registered: '" + line + "'! Type 'help' for help.");
+                        all("No command registered: '" + line + "'! Type 'help' for help.");
                     }
                 }
             }
         } catch (Exception e) {
-            error("Error while console reading: ", e);
+            all("Error while console reading: ", e);
         }
     }
 
@@ -158,7 +158,7 @@ public class TerminalConsole {
                 return true;
             }
         } catch (Exception e) {
-            error("Error while execute cmd '" + input + "'", e);
+            all("Error while execute cmd '" + input + "'", e);
         }
         return false;
     }

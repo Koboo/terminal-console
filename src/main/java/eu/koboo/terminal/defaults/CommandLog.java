@@ -39,7 +39,7 @@ public class CommandLog extends Command {
     }
 
     private void printHelp() {
-        terminal.info("");
+        terminal.all("");
         StringBuilder builder = new StringBuilder();
         Arrays.stream(ConsoleLevel.values()).forEach(level -> builder.append(", ").append(level.name()));
         terminal.all("Level: " + builder.toString().replaceFirst(", ", ""));
