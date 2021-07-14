@@ -13,6 +13,7 @@ public class ConsoleBuilder {
     private ConsoleLevel initialLevel;
     private String logDirectory;
     private String prompt;
+    private String logPrefix;
     private Runnable shutdownHook;
 
     private ConsoleBuilder() {
@@ -22,6 +23,7 @@ public class ConsoleBuilder {
         this.appName = "console";
         this.initialLevel = ConsoleLevel.INFO;
         this.logDirectory = "logs/";
+        this.logPrefix = "&8[&7%time% &8- &7%date%&8] &8[&b%name%&8] &8[&e%level%&8]";
         this.prompt = ConsoleColor.parseColor(" &6> &r");
     }
 
@@ -57,6 +59,11 @@ public class ConsoleBuilder {
 
     public ConsoleBuilder setConsolePrompt(String prompt) {
         this.prompt = ConsoleColor.parseColor(prompt);
+        return this;
+    }
+
+    public ConsoleBuilder setLogPrefix(String logPrefix) {
+        this.logPrefix = logPrefix;
         return this;
     }
 
@@ -102,6 +109,10 @@ public class ConsoleBuilder {
 
     protected String getConsolePrompt() {
         return prompt;
+    }
+
+    protected String getLogPrefix() {
+        return logPrefix;
     }
 
     protected Runnable getShutdownHook() {

@@ -115,7 +115,7 @@ public class TerminalConsole {
 
     public void register(Command command) {
         for (String cmd : command.commands()) {
-            commandRegistry.put(cmd.toLowerCase(), command);
+            commandRegistry.put(cmd.toLowerCase(Locale.ROOT), command);
         }
     }
 
@@ -131,25 +131,31 @@ public class TerminalConsole {
 
     public void start() {
         try {
-            Runtime.getRuntime().addShutdownHook(new Thread(() -> active.set(false)));
-            while (active.get() && !Thread.currentThread().isInterrupted()) {
+            while (active.get()) {
                 if (lineReader != null) {
                     String line = lineReader.readLine(consoleBuilder.getConsolePrompt());
                     line = line.trim();
-                    if (!executeCLICommand(line)) {
+                    if (!executeCommand(line)) {
                         all("No command registered: '" + line + "'! Type 'help' for help.");
                     }
                 }
+            }
+            if(shutdownHook != null) {
+                shutdownHook.run();
             }
         } catch (Exception e) {
             all("Error while console reading: ", e);
         }
     }
 
-    private boolean executeCLICommand(String input) {
+    public void stop() {
+        active.set(false);
+    }
+
+    private boolean executeCommand(String input) {
         try {
             String[] args = input.split(" ");
-            String inputCommand = args[0].toLowerCase();
+            String inputCommand = args[0].toLowerCase(Locale.ROOT);
             args = Arrays.copyOfRange(args, 1, args.length);
             Command command = commandRegistry.getOrDefault(inputCommand, null);
             if (command != null) {
@@ -208,12 +214,22 @@ public class TerminalConsole {
             }
 
             final long current = System.currentTimeMillis();
-            String logTimeString = new SimpleDateFormat("HH:mm:ss").format(current);
-            String logDateString = new SimpleDateFormat("yyyy-MM-dd").format(current);
-            message = "&8[&7" + logDateString + " &8- &7" + logTimeString + "&8] " +
-                    "&8[&b" + this.consoleBuilder.getConsoleName() + "&8] " +
-                    "[&6" + consoleLevel.name().toLowerCase() + "&8] &r" +
-                    message + "&r" + System.lineSeparator();
+            String logPrefix = consoleBuilder.getLogPrefix();
+            if(logPrefix.contains("%time%")) {
+                String timeString = new SimpleDateFormat("HH:mm:ss").format(current);
+                logPrefix = logPrefix.replaceFirst("%time%", timeString);
+            }
+            if(logPrefix.contains("%date%")) {
+                String dateString = new SimpleDateFormat("yyyy-MM-dd").format(current);
+                logPrefix = logPrefix.replaceFirst("%date%", dateString);
+            }
+            if(logPrefix.contains("%name%")) {
+                logPrefix = logPrefix.replaceFirst("%name%", consoleBuilder.getConsoleName());
+            }
+            if(logPrefix.contains("%level%")) {
+                logPrefix = logPrefix.replaceFirst("%level%", consoleLevel.name().toLowerCase(Locale.ROOT));
+            }
+            message = logPrefix + message + "&r" + System.lineSeparator();
             logger.info(ConsoleColor.removeColor(message));
             message = ConsoleColor.parseColor(message);
             if (terminal == null) {
