@@ -42,5 +42,6 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
     compile group: 'org.jline', name: 'jline', version: '3.19.0'
     compile group: 'org.slf4j', name: 'slf4j-jdk14', version: '1.7.30'
+    compile group: 'org.fusesource.jansi', name: 'jansi', version: '2.3.3'
 }
 

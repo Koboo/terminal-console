@@ -4,6 +4,8 @@ import eu.koboo.terminal.command.Command;
 import eu.koboo.terminal.util.ConsoleColor;
 import eu.koboo.terminal.util.ConsoleLevel;
 
+import org.fusesource.jansi.Ansi;
+import org.fusesource.jansi.AnsiConsole;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.terminal.Terminal;
@@ -41,6 +43,8 @@ public class TerminalConsole {
 
     protected TerminalConsole(ConsoleBuilder consoleBuilder) {
         INSTANCE = this;
+
+        AnsiConsole.systemInstall();
 
         this.consoleBuilder = consoleBuilder;
         this.commandExecutor = Executors.newFixedThreadPool(consoleBuilder.getCommandThreads());
