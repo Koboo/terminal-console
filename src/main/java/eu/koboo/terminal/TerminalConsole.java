@@ -140,9 +140,6 @@ public class TerminalConsole {
                     }
                 }
             }
-            if(shutdownHook != null) {
-                shutdownHook.run();
-            }
         } catch (Exception e) {
             all("Error while console reading: ", e);
         }
