@@ -6,16 +6,17 @@ import eu.koboo.terminal.util.ConsoleLevel;
 
 public class ConsoleBuilder {
 
-    private int cliThreads;
+    private int commandThreads;
     private boolean showExecute;
     private boolean showExternal;
     private String appName;
     private ConsoleLevel initialLevel;
     private String logDirectory;
     private String prompt;
+    private Runnable shutdownHook;
 
     private ConsoleBuilder() {
-        this.cliThreads = Runtime.getRuntime().availableProcessors();
+        this.commandThreads = Runtime.getRuntime().availableProcessors();
         this.showExecute = true;
         this.showExternal = true;
         this.appName = "console";
@@ -24,17 +25,17 @@ public class ConsoleBuilder {
         this.prompt = ConsoleColor.parseColor(" &6> &r");
     }
 
-    public ConsoleBuilder setCLIThreads(int threads) {
-        this.cliThreads = threads;
+    public ConsoleBuilder setCommandThreads(int threads) {
+        this.commandThreads = threads;
         return this;
     }
 
-    public ConsoleBuilder hideExternal() {
+    public ConsoleBuilder hideExternalLogs() {
         this.showExternal = false;
         return this;
     }
 
-    public ConsoleBuilder hideExecute() {
+    public ConsoleBuilder hideCommandLog() {
         this.showExecute = false;
         return this;
     }
@@ -59,6 +60,11 @@ public class ConsoleBuilder {
         return this;
     }
 
+    public ConsoleBuilder shutdown(Runnable runnable) {
+        shutdownHook = runnable;
+        return this;
+    }
+
     public TerminalConsole build() {
         TerminalConsole console = new TerminalConsole(this);
         console.register(new CommandClear());
@@ -70,23 +76,23 @@ public class ConsoleBuilder {
         return console;
     }
 
-    protected int getCliThreads() {
-        return cliThreads;
+    protected int getCommandThreads() {
+        return commandThreads;
     }
 
-    protected boolean isShowExecute() {
+    protected boolean isShowingCommandLogs() {
         return showExecute;
     }
 
-    protected boolean isShowExternal() {
+    protected boolean isShowingExternalLogs() {
         return showExternal;
     }
 
-    protected String getAppName() {
+    protected String getConsoleName() {
         return appName;
     }
 
-    protected ConsoleLevel getInitialLevel() {
+    protected ConsoleLevel getInitialConsoleLevel() {
         return initialLevel;
     }
 
@@ -94,8 +100,12 @@ public class ConsoleBuilder {
         return logDirectory;
     }
 
-    protected String getPrompt() {
+    protected String getConsolePrompt() {
         return prompt;
+    }
+
+    protected Runnable getShutdownHook() {
+        return shutdownHook;
     }
 
     public static ConsoleBuilder builder() {

@@ -29,6 +29,7 @@ public class TerminalConsole {
     private final ExecutorService commandExecutor;
     private final AtomicReference<Boolean> active;
     private final HashMap<String, Command> commandRegistry;
+    private final Runnable shutdownHook;
 
     private ConsoleLevel consoleLevel;
     private Terminal terminal;
@@ -39,11 +40,12 @@ public class TerminalConsole {
         INSTANCE = this;
 
         this.consoleBuilder = consoleBuilder;
-        this.commandExecutor = Executors.newFixedThreadPool(consoleBuilder.getCliThreads());
-        this.consoleLevel = consoleBuilder.getInitialLevel();
+        this.commandExecutor = Executors.newFixedThreadPool(consoleBuilder.getCommandThreads());
+        this.consoleLevel = consoleBuilder.getInitialConsoleLevel();
         this.active = new AtomicReference<>(true);
         this.commandRegistry = new HashMap<>();
         this.contentGrep = null;
+        this.shutdownHook = consoleBuilder.getShutdownHook();
 
         File logDir = new File(consoleBuilder.getLogDirectory());
         if (!logDir.exists())
@@ -73,7 +75,7 @@ public class TerminalConsole {
             this.lineReader = LineReaderBuilder
                     .builder()
                     .terminal(this.terminal)
-                    .variable(LineReader.SECONDARY_PROMPT_PATTERN, consoleBuilder.getPrompt())
+                    .variable(LineReader.SECONDARY_PROMPT_PATTERN, consoleBuilder.getConsolePrompt())
                     .build();
         } catch (Exception e) {
             e.printStackTrace();
@@ -85,7 +87,7 @@ public class TerminalConsole {
         Handler handler = new Handler() {
             @Override
             public void publish(LogRecord record) {
-                if (consoleBuilder.isShowExternal()) {
+                if (consoleBuilder.isShowingExternalLogs()) {
                     if (record.getThrown() != null)
                         log(ConsoleLevel.EXT, record.getMessage(), record.getThrown());
                     else
@@ -132,7 +134,7 @@ public class TerminalConsole {
             Runtime.getRuntime().addShutdownHook(new Thread(() -> active.set(false)));
             while (active.get() && !Thread.currentThread().isInterrupted()) {
                 if (lineReader != null) {
-                    String line = lineReader.readLine(consoleBuilder.getPrompt());
+                    String line = lineReader.readLine(consoleBuilder.getConsolePrompt());
                     line = line.trim();
                     if (!executeCLICommand(line)) {
                         all("No command registered: '" + line + "'! Type 'help' for help.");
@@ -152,13 +154,13 @@ public class TerminalConsole {
             Command command = commandRegistry.getOrDefault(inputCommand, null);
             if (command != null) {
                 String[] finalArgs = args;
-                if (consoleBuilder.isShowExecute())
-                    all("cli-execute <> '" + input + "'");
+                if (consoleBuilder.isShowingCommandLogs())
+                    all("command executed! (" + input + ")");
                 commandExecutor.execute(() -> command.execute(inputCommand, finalArgs));
                 return true;
             }
         } catch (Exception e) {
-            all("Error while execute cmd '" + input + "'", e);
+            all("Error while executing command '" + input + "'", e);
         }
         return false;
     }
@@ -209,7 +211,7 @@ public class TerminalConsole {
             String logTimeString = new SimpleDateFormat("HH:mm:ss").format(current);
             String logDateString = new SimpleDateFormat("yyyy-MM-dd").format(current);
             message = "&8[&7" + logDateString + " &8- &7" + logTimeString + "&8] " +
-                    "&8[&b" + this.consoleBuilder.getAppName() + "&8] " +
+                    "&8[&b" + this.consoleBuilder.getConsoleName() + "&8] " +
                     "[&6" + consoleLevel.name().toLowerCase() + "&8] &r" +
                     message + "&r" + System.lineSeparator();
             logger.info(ConsoleColor.removeColor(message));
@@ -328,6 +330,10 @@ public class TerminalConsole {
 
     public String stretchRight(String message, int length) {
         return stretchRight(message, length, null);
+    }
+
+    public Runnable getShutdownHook() {
+        return shutdownHook;
     }
 
     public static TerminalConsole getConsole() {
