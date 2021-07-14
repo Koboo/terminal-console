@@ -34,6 +34,9 @@ TerminalConsole console = ConsoleBuilder.builder()
 * `initConsoleLevel(ConsoleLevel consoleLevel)`
     * Set the initial `ConsoleLevel` of console
     * Default: `ConsoleLevel.INFO`
+* `useLogFiles(boolean value)`
+    * Enable creation and usage of log-files or not
+    * Default: `true`
 * `setLogDirectory(String directory)`
     * Set the directory for log-files
     * Default: `"logs/"`
