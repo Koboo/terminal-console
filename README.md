@@ -40,6 +40,10 @@ TerminalConsole console = ConsoleBuilder.builder()
 * `setConsolePrompt(String prompt)`
     * Set the prompt of the console
     * Default: `" &6>&r "`
+* `setLogPrefix(String prefix)`
+    * Set the log-format of the messages
+    * Default: `"&8[&7%time% &8- &7%date%&8] &8[&b%name%&8] &8[&e%level%&8]"`
+    * Placeholder: ``%time%``, ``%date%``, ``%name%``, ``%level%``
 * `shutdown(Runnable runnable)`
     * Add a shutdown-hook to the stop command
     * Default: `null`
