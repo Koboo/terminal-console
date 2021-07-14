@@ -7,9 +7,9 @@ public class TerminalTest {
 
     public static void main(String[] args) {
         TerminalConsole console = ConsoleBuilder.builder()
-                .setCLIThreads(6)
-                .hideExternal()
-                .hideExecute()
+                .setCommandThreads(6)
+                .hideExternalLogs()
+                .hideCommandLog()
                 .setConsoleName("test")
                 .initConsoleLevel(ConsoleLevel.DEBUG)
                 .setLogDirectory("logs/")
