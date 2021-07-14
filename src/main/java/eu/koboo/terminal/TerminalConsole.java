@@ -2,8 +2,8 @@ package eu.koboo.terminal;
 
 import eu.koboo.terminal.command.Command;
 import eu.koboo.terminal.util.ConsoleColor;
-import eu.koboo.terminal.util.ConsoleFormatter;
 import eu.koboo.terminal.util.ConsoleLevel;
+
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.terminal.Terminal;
@@ -12,12 +12,15 @@ import org.jline.terminal.TerminalBuilder;
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+
 import java.text.SimpleDateFormat;
+
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.*;
+import java.util.logging.Formatter;
 
 public class TerminalConsole {
 
@@ -47,24 +50,31 @@ public class TerminalConsole {
         this.contentGrep = null;
         this.shutdownHook = consoleBuilder.getShutdownHook();
 
-        File logDir = new File(consoleBuilder.getLogDirectory());
-        if (!logDir.exists())
-            logDir.mkdirs();
-        int count = 1;
-        String date = new SimpleDateFormat("yyyy-MM-dd").format(System.currentTimeMillis());
-        File[] files = logDir.listFiles();
-        if (files != null)
-            for (File file : files)
-                if (file.getName().startsWith(date))
-                    count += 1;
-        String logFile = logDir.getPath() + "/" + date + "-" + count + ".log";
-        try {
-            FileHandler fileHandler = new FileHandler(logFile);
-            logger.setUseParentHandlers(false);
-            fileHandler.setFormatter(new ConsoleFormatter());
-            logger.addHandler(fileHandler);
-        } catch (Exception e) {
-            e.printStackTrace();
+        if(consoleBuilder.isUsingLogFiles()) {
+            File logDir = new File(consoleBuilder.getLogDirectory());
+            if (!logDir.exists())
+                logDir.mkdirs();
+            int count = 1;
+            String date = new SimpleDateFormat("yyyy-MM-dd").format(System.currentTimeMillis());
+            File[] files = logDir.listFiles();
+            if (files != null)
+                for (File file : files)
+                    if (file.getName().startsWith(date))
+                        count += 1;
+            String logFile = logDir.getPath() + "/" + date + "-" + count + ".log";
+            try {
+                FileHandler fileHandler = new FileHandler(logFile);
+                logger.setUseParentHandlers(false);
+                fileHandler.setFormatter(new Formatter() {
+                    @Override
+                    public String format(LogRecord record) {
+                        return record.getMessage();
+                    }
+                });
+                logger.addHandler(fileHandler);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         try {
@@ -80,9 +90,6 @@ public class TerminalConsole {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        ConsoleHandler consoleHandler = new ConsoleHandler();
-        consoleHandler.setFormatter(new ConsoleFormatter());
 
         Handler handler = new Handler() {
             @Override
@@ -233,7 +240,9 @@ public class TerminalConsole {
                 logPrefix = logPrefix + "&r";
             }
             message = logPrefix + message + "&r" + System.lineSeparator();
-            logger.info(ConsoleColor.removeColor(message));
+            if(consoleBuilder.isUsingLogFiles()) {
+                logger.info(ConsoleColor.removeColor(message));
+            }
             message = ConsoleColor.parseColor(message);
             if (terminal == null) {
                 System.out.println(message);

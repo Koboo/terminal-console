@@ -9,6 +9,7 @@ public class ConsoleBuilder {
     private int commandThreads;
     private boolean showExecute;
     private boolean showExternal;
+    private boolean useLogFiles;
     private String appName;
     private ConsoleLevel initialLevel;
     private String logDirectory;
@@ -20,6 +21,7 @@ public class ConsoleBuilder {
         this.commandThreads = Runtime.getRuntime().availableProcessors();
         this.showExecute = true;
         this.showExternal = true;
+        this.useLogFiles = true;
         this.appName = "console";
         this.initialLevel = ConsoleLevel.INFO;
         this.logDirectory = "logs/";
@@ -39,6 +41,11 @@ public class ConsoleBuilder {
 
     public ConsoleBuilder hideCommandLog() {
         this.showExecute = false;
+        return this;
+    }
+
+    public ConsoleBuilder useLogFiles(boolean useLogFiles) {
+        this.useLogFiles = useLogFiles;
         return this;
     }
 
@@ -93,6 +100,10 @@ public class ConsoleBuilder {
 
     protected boolean isShowingExternalLogs() {
         return showExternal;
+    }
+
+    protected boolean isUsingLogFiles() {
+        return useLogFiles;
     }
 
     protected String getConsoleName() {
