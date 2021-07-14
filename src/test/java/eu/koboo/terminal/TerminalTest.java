@@ -14,6 +14,7 @@ public class TerminalTest {
                 .initConsoleLevel(ConsoleLevel.DEBUG)
                 .setLogDirectory("logs/")
                 .setConsolePrompt(" &2->&7|&5>:&r ")
+                .shutdown(() -> TerminalConsole.getConsole().info("ShutdownHook-Test"))
                 .build();
         String[] names = new String[]{
                 "Test", "Emily", "Emma", "Isabella", "Jeff", "Tom", "Madeleine", "Michelle",
