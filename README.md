@@ -19,13 +19,13 @@ TerminalConsole console = ConsoleBuilder.builder()
 
 ### Options
 
-* `setCCLIThreads(int threads)`
+* `setCommandThreads(int threads)`
     * Set total threads for command-line-interface
     * Default: `Runtime.getRuntime().availableProcessors()`
-* `hideExternal()`
+* `hideExternalLogs()`
     * Hide logs from external libraries (slf4j-jdk)
     * Default: `false`
-* `hideExecute()`
+* `hideCommandLogs()`
     * Hide logs from command-line-interface execute
     * Default: `false`
 * `setConsoleName(String name)`
@@ -40,6 +40,9 @@ TerminalConsole console = ConsoleBuilder.builder()
 * `setConsolePrompt(String prompt)`
     * Set the prompt of the console
     * Default: `" &6>&r "`
+* `shutdown(Runnable runnable)`
+    * Add a shutdown-hook to the stop command
+    * Default: `null`
     
 # ConsoleLevel
 
