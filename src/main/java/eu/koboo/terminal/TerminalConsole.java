@@ -226,6 +226,9 @@ public class TerminalConsole {
             if(logPrefix.contains("%level%")) {
                 logPrefix = logPrefix.replaceFirst("%level%", consoleLevel.name().toLowerCase(Locale.ROOT));
             }
+            if(!logPrefix.endsWith(" ")) {
+                logPrefix = logPrefix + " ";
+            }
             if(!logPrefix.endsWith("&r") && !logPrefix.endsWith("§r")) {
                 logPrefix = logPrefix + "&r";
             }
