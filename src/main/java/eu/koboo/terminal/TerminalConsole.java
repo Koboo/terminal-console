@@ -226,6 +226,9 @@ public class TerminalConsole {
             if(logPrefix.contains("%level%")) {
                 logPrefix = logPrefix.replaceFirst("%level%", consoleLevel.name().toLowerCase(Locale.ROOT));
             }
+            if(!logPrefix.endsWith("&r") && !logPrefix.endsWith("§r")) {
+                logPrefix = logPrefix + "&r";
+            }
             message = logPrefix + message + "&r" + System.lineSeparator();
             logger.info(ConsoleColor.removeColor(message));
             message = ConsoleColor.parseColor(message);
