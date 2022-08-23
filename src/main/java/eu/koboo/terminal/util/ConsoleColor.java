@@ -20,8 +20,8 @@ public enum ConsoleColor {
     LIGHT_YELLOW("\u001B[93m", "e"),
     WHITE("\u001B[37m", "f");
 
-    String ansiColor;
-    String code;
+    private final String ansiColor;
+    private final String code;
 
     ConsoleColor(String ansiColor, String code) {
         this.ansiColor = ansiColor;

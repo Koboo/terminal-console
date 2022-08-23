@@ -29,8 +29,8 @@ public class CommandHelp extends Command {
             for(String alias : cmd.commands()) {
                 builder.append(", ").append(alias);
             }
-            String cmds = builder.toString().replaceFirst(", ", "");
-            terminal.all("  * §c" + cmds + "§8 » §7" + cmd.description());
+            String commandString = builder.toString().replaceFirst(", ", "");
+            terminal.all("  * §c" + commandString + "§8 » §7" + cmd.description());
         }
         terminal.all("");
         terminal.all(" ====[  T E R M I N A L  ]====");

@@ -6,17 +6,25 @@ plugins {
 group "${publicGroup}"
 version "${publicVersion}"
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-compileJava.options.encoding = 'UTF-8'
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
+repositories {
+    mavenCentral()
+    maven {
+        url 'https://reposilite.koboo.eu/releases'
+    }
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+    implementation 'org.jline:jline:3.21.0'
+    implementation 'org.slf4j:slf4j-jdk14:1.7.36'
+    implementation 'org.fusesource.jansi:jansi:2.4.0'
 }
 
 publishing {
     repositories {
         maven {
-            url = 'http://repo.koboo.eu/releases'
+            url = 'https://reposilite.koboo.eu/releases'
             credentials {
                 username = System.getenv('REPO_USER')
                 password = System.getenv('REPO_TOKEN')
@@ -30,18 +38,13 @@ publishing {
     }
 }
 
-repositories {
-    mavenCentral()
-    maven {
-        url 'http://repo.koboo.eu/releases'
-    }
+compileJava.options.encoding = 'UTF-8'
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
 }
 
-dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
-    compile group: 'org.jline', name: 'jline', version: '3.19.0'
-    compile group: 'org.slf4j', name: 'slf4j-jdk14', version: '1.7.30'
-    compile group: 'org.fusesource.jansi', name: 'jansi', version: '2.3.3'
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 }
-

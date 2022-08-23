@@ -15,7 +15,7 @@ public enum ConsoleLevel {
     ALL(6),
     EXT(7);
 
-    int level;
+    private final int level;
 
     ConsoleLevel(int level) {
         this.level = level;

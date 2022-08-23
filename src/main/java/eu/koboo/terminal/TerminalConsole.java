@@ -56,15 +56,19 @@ public class TerminalConsole {
 
         if(consoleBuilder.isUsingLogFiles()) {
             File logDir = new File(consoleBuilder.getLogDirectory());
-            if (!logDir.exists())
+            if (!logDir.exists()) {
                 logDir.mkdirs();
+            }
             int count = 1;
             String date = new SimpleDateFormat("yyyy-MM-dd").format(System.currentTimeMillis());
             File[] files = logDir.listFiles();
-            if (files != null)
-                for (File file : files)
-                    if (file.getName().startsWith(date))
+            if (files != null) {
+                for (File file : files) {
+                    if (file.getName().startsWith(date)) {
                         count += 1;
+                    }
+                }
+            }
             String logFile = logDir.getPath() + "/" + date + "-" + count + ".log";
             try {
                 FileHandler fileHandler = new FileHandler(logFile);
@@ -99,10 +103,11 @@ public class TerminalConsole {
             @Override
             public void publish(LogRecord record) {
                 if (consoleBuilder.isShowingExternalLogs()) {
-                    if (record.getThrown() != null)
+                    if (record.getThrown() != null) {
                         log(ConsoleLevel.EXT, record.getMessage(), record.getThrown());
-                    else
+                    } else {
                         log(ConsoleLevel.EXT, record.getMessage());
+                    }
                 }
             }
 
@@ -168,8 +173,9 @@ public class TerminalConsole {
             Command command = commandRegistry.getOrDefault(inputCommand, null);
             if (command != null) {
                 String[] finalArgs = args;
-                if (consoleBuilder.isShowingCommandLogs())
+                if (consoleBuilder.isShowingCommandLogs()) {
                     all("command executed! (" + input + ")");
+                }
                 commandExecutor.execute(() -> command.execute(inputCommand, finalArgs));
                 return true;
             }
@@ -180,12 +186,15 @@ public class TerminalConsole {
     }
 
     private boolean shouldPrint(ConsoleLevel consoleLevel, String message) {
-        if (this.consoleLevel == ConsoleLevel.OFF)
+        if (this.consoleLevel == ConsoleLevel.OFF) {
             return false;
-        if (consoleLevel == ConsoleLevel.ALL)
+        }
+        if (consoleLevel == ConsoleLevel.ALL) {
             return true;
-        if (contentGrep != null)
+        }
+        if (contentGrep != null) {
             return message.contains(contentGrep);
+        }
         return this.consoleLevel.level() <= consoleLevel.level();
     }
 
@@ -332,12 +341,13 @@ public class TerminalConsole {
     }
 
     public String stretchLeft(String message, int length, String stretchEnd) {
-        if (message.length() < length)
-            for (int i = message.length(); i < length; i++) {
-                message = message + " ";
+        if (message.length() < length) {
+            StringBuilder messageBuilder = new StringBuilder(message);
+            for (int i = messageBuilder.length(); i < length; i++) {
+                messageBuilder.append(" ");
             }
-
-        else
+            message = messageBuilder.toString();
+        } else
             for (int i = message.length(); i > length; i--) {
                 message = message.substring(0, message.length() - 1);
             }
